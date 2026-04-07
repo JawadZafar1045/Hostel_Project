@@ -12,11 +12,13 @@ export default function Home() {
       <main>
         <h1>Hostel Project</h1>
         <p>Next.js is installed and ready in the frontend folder.</p>
-        {<div>
-          <Link href="/auth/login">Login</Link>
-          <br />
-          <Link href="/auth/register">Register</Link>
-        </div>}
+        {
+          <div>
+            <Link href="/auth/login">Login</Link>
+            <br />
+            <Link href="/auth/register">Register</Link>
+          </div>
+        }
       </main>
     </>
   );
