@@ -8,11 +8,6 @@ const useAuth = () => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Future implementation:
-  // useEffect(() => {
-  //   checkAuthStatus();
-  // }, []);
-
   return {
     user,
     isLoading,

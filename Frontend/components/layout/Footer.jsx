@@ -27,7 +27,7 @@ const Footer = () => {
           </div>
         </div>
         <div className="border-t border-gray-800 pt-8 text-center text-gray-500 text-sm">
-          <p>© {new Date().getFullYear()} HostelVaniya. All rights reserved.</p>
+          <p suppressHydrationWarning>© {new Date().getFullYear()} HostelVaniya. All rights reserved.</p>
         </div>
       </div>
     </footer>
