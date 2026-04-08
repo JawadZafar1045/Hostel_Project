@@ -10,6 +10,7 @@ export default function HomePage() {
         </p>
       </div>
       
+      {/* Search/Filter section placeholder */}
       <div className="max-w-4xl mx-auto mb-16 bg-white p-6 rounded-xl shadow-lg flex flex-col md:flex-row gap-4">
         <input 
           type="text" 

@@ -8,4 +8,13 @@ const axiosInstance = axios.create({
   },
 });
 
+// Response Interceptor for global error handling
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    // Handle global errors here
+    return Promise.reject(error);
+  }
+);
+
 export default axiosInstance;
