@@ -9,12 +9,12 @@ export default function HomePage() {
           Browse verified hostels near you
         </p>
       </div>
-      
+
       {/* Search/Filter section placeholder */}
       <div className="max-w-4xl mx-auto mb-16 bg-white p-6 rounded-xl shadow-lg flex flex-col md:flex-row gap-4">
-        <input 
-          type="text" 
-          placeholder="Search by city or hostel name..." 
+        <input
+          type="text"
+          placeholder="Search by city or hostel name..."
           className="flex-1 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <button className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
