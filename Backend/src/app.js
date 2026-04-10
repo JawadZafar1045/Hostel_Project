@@ -46,11 +46,10 @@ app.get('/health', (req, res) => {
   res.status(200).json({ success: true, message: 'Server is running' });
 });
 
-// ─── Routes (will be mounted in subsequent steps) ───
-// app.use('/api/auth', authRoutes);
-// app.use('/api/admin', adminRoutes);
-// app.use('/api/owner', ownerRoutes);
-// app.use('/api/public', publicRoutes);
+// ─── Routes ───
+app.use('/api/auth', require('./routes/auth.routes'));
+app.use('/api/owner', require('./routes/owner.routes'));
+app.use('/api/admin', require('./routes/admin.routes'));
 
 // ─── 404 Handler ───
 app.use((req, res) => {
