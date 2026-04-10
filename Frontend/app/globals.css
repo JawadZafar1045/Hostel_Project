@@ -9,7 +9,7 @@
   }
 
   body {
-    @apply bg-surface text-ink-mid font-body antialiased;
+    @apply bg-white text-slate-700 font-sans antialiased;
     min-height: 100vh;
     text-rendering: optimizeLegibility;
   }
@@ -20,28 +20,35 @@
   h4,
   h5,
   h6 {
-    @apply font-display text-ink;
+    @apply font-bold text-slate-900 tracking-tight;
   }
 
-  /* --- MINIMALIST INPUT FOCUS (No Ring) --- */
+  input,
+  textarea,
+  select,
+  button {
+    @apply outline-none shadow-none ring-0;
+    font: inherit;
+  }
+
   input,
   textarea,
   select {
-    @apply border border-gray-200 bg-white transition-colors duration-200;
+    @apply border border-slate-200 bg-white transition-all duration-200;
   }
 
-  /* On focus: No ring, just a slightly darker border and a crisp background */
   input:focus,
   textarea:focus,
-  select:focus {
-    @apply outline-none border-blue-600 bg-white;
-    /* If you want it even more subtle, use border-gray-400 */
+  select:focus,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    @apply outline-none ring-0 ring-offset-0 border-slate-400 bg-white;
   }
 
-  /* Accessibility reset: Only show a thin ring for keyboard users 
-     so the app remains compliant but looks clean for mouse users */
   :focus-visible {
-    @apply outline-none ring-1 ring-blue-600 ring-offset-1;
+    outline: none !important;
+    box-shadow: none !important;
   }
 
   a {
@@ -53,29 +60,22 @@
   video {
     @apply max-w-full block h-auto;
   }
-
-  input,
-  button,
-  textarea,
-  select {
-    font: inherit;
-  }
 }
 
 @layer utilities {
   .line-clamp-2 {
+    overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
     line-clamp: 2;
-    overflow: hidden;
   }
 
-  .line-clamp-4 {
+  .line-clamp-1 {
+    overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 4;
-    line-clamp: 4;
-    overflow: hidden;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
   }
 }
