@@ -1,4 +1,4 @@
-# 🏨 HostelVaniya – Project README
+# 🏨 HostelVaniya – Project README 
 
 ## 📌 Project Overview
 
@@ -80,7 +80,7 @@ http://localhost:3000
 Create a `.env.local` file inside `frontend/`:
 
 ```
-NEXT_PUBLIC_API_URL=http://localhost:5000/api
+NEXT_PUBLIC_API_URL=http://localhost:8000/api
 ```
 
 ---
