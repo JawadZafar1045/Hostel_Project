@@ -9,10 +9,9 @@ import { z } from 'zod'
 import { Eye, EyeOff, Loader2 } from 'lucide-react'
 import { loginUser } from '@/api/auth.api'
 import { useAuthStore } from '@/store/authStore'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
-import { Card } from '@/components/ui/Card'
-
+import Input from '@/components/ui/Input'
+import Card from '@/components/ui/Card'
+import Button from '@/components/ui/Button'
 const loginSchema = z.object({
   email: z
     .string()
@@ -128,14 +127,14 @@ export default function LoginPage() {
           </div>
 
 
-          {/* <div className="flex justify-end -mt-2">
+          <div className="flex justify-end -mt-2">
             <Link
               href="/forgot-password"
               className="text-sm font-medium text-[#7C3AED] hover:underline"
             >
               Forgot password?
             </Link>
-          </div> */}
+          </div>
 
           {/* Submit */}
           <Button
@@ -156,14 +155,15 @@ export default function LoginPage() {
         </form>
 
         {/* Register link */}
-        {/* <p className="mt-6 text-center text-sm text-gray-500">
-          New to HostelHub?{' '}
+        <p className="mt-6 text-center text-sm text-gray-500">
+          New to Hostelvanya?{' '}
           <Link href="/register" className="font-semibold text-[#7C3AED] hover:underline">
             Create account
           </Link>
-        </p> */}
+        </p>
 
       </Card>
     </main>
   )
 }
+

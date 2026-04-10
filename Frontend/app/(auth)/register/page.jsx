@@ -7,10 +7,10 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Eye, EyeOff, Loader2, GraduationCap, Home, CheckCircle2 } from 'lucide-react'
-import { registerUser } from '@/api/auth.api'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
-import { Card } from '@/components/ui/Card'
+import { registerStudent, registerOwner } from '@/api/auth.api'
+import Button from '@/components/ui/Button'
+import Input from '@/components/ui/Input'
+import Card from '@/components/ui/Card'
 
 const registerSchema = z.object({
   role: z.enum(['student', 'owner'], { required_error: 'Please select a role' }),
@@ -69,7 +69,11 @@ export default function RegisterPage() {
   const onSubmit = async (data) => {
     setServerError('')
     try {
-      await registerUser(data)
+      if (data.role === 'owner') {
+        await registerOwner(data)
+      } else {
+        await registerStudent(data)
+      }
       setSuccess(true)
       setTimeout(() => router.push('/login'), 1500)
     } catch (err) {
