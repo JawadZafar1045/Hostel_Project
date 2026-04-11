@@ -1,35 +1,49 @@
-import React, { forwardRef } from 'react';
-
-const Input = forwardRef(({
+export default function Input({
   label,
+  name,
+  type = "text",
+  placeholder,
+  value,
+  onChange,
   error,
-  className = '',
-  wrapperClassName = '',
+  leftIcon,
+  className = "",
   ...props
-}, ref) => {
+}) {
   return (
-    <div className={`flex flex-col gap-1 ${wrapperClassName}`}>
+    <div className={`flex flex-col gap-1.5 w-full ${className}`}>
       {label && (
-        <label htmlFor={props.id || props.name} className="text-sm font-medium text-gray-700">
-          {label}
+        <label htmlFor={name} className="text-sm font-medium text-gray-700">
+          {label} {props.required && <span className="text-red-500">*</span>}
         </label>
       )}
-      <input
-        ref={ref}
-        className={`p-3 border rounded-lg focus:outline-none focus:ring-2 transition-all w-full ${
-          error
-            ? 'border-red-500 focus:ring-red-200'
-            : 'border-gray-300 focus:ring-purple-100 focus:border-[#7C3AED]'
-        } ${className}`}
-        {...props}
-      />
-      {error && typeof error === 'string' && (
-        <span className="text-xs text-red-500 mt-1">{error}</span>
-      )}
+
+      <div className="relative flex items-center">
+        {leftIcon && (
+          <span className="absolute left-3.5 text-gray-400">{leftIcon}</span>
+        )}
+
+        <input
+          id={name}
+          name={name}
+          type={type}
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+          className={`
+            w-full py-2.5 px-4 text-sm rounded-lg border bg-white transition-all outline-none focus:ring-4
+            ${leftIcon ? "pl-10" : ""}
+            ${
+              error
+                ? "border-red-500 focus:ring-red-100"
+                : "border-gray-300 focus:ring-blue-50 focus:border-blue-500 hover:border-gray-400"
+            }
+          `}
+          {...props}
+        />
+      </div>
+
+      {error && <p className="text-xs text-red-600 font-medium">{error}</p>}
     </div>
   );
-});
-
-Input.displayName = 'Input';
-
-export default Input;
+}
