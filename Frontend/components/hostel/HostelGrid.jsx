@@ -2,7 +2,6 @@ import HostelCard from "./HostelCard";
 import HostelSkeleton from "./HostelSkeleton";
 
 export default function HostelGrid({ hostels, isLoading, limit = 9 }) {
-  // 1. LOADING STATE - Now matches the 3x3 layout
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8">
@@ -13,7 +12,6 @@ export default function HostelGrid({ hostels, isLoading, limit = 9 }) {
     );
   }
 
-  // 2. EMPTY STATE
   if (!hostels || hostels.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-24 border-2 border-dashed border-slate-100 rounded-[3rem] bg-slate-50/30">
@@ -27,7 +25,6 @@ export default function HostelGrid({ hostels, isLoading, limit = 9 }) {
     );
   }
 
-  // 3. POPULATED STATE (3-Column Layout for Large Screens)
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8">
       {hostels.map((hostel) => (
