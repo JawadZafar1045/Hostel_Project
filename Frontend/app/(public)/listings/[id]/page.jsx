@@ -9,7 +9,6 @@ import { fetchHostelById } from "@/api/hostel.api";
 import Badge from "@/components/ui/Badge";
 import StarRating from "@/components/ui/StarRating";
 
-// Icons
 import {
   MapPin,
   Wifi,
@@ -41,8 +40,6 @@ const AMENITY_LIST = [
 
 export default function HostelDetailPage() {
   const { id } = useParams();
-
-  // Gallery State
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
@@ -62,7 +59,7 @@ export default function HostelDetailPage() {
 
   const handleWhatsApp = () => {
     const msg = encodeURIComponent(
-      `Hi, I'm interested in ${hostel.title}. Is it still available?`,
+      `Hi, I'm interested in ${hostel.title}. Is it available?`,
     );
     window.open(`https://wa.me/${hostel.whatsapp}?text=${msg}`, "_blank");
   };
@@ -75,172 +72,169 @@ export default function HostelDetailPage() {
     );
   };
 
+  const handleShare = async () => {
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: hostel.title,
+          url: window.location.href,
+        });
+      } else {
+        await navigator.clipboard.writeText(window.location.href);
+        alert("Link copied to clipboard!");
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white text-slate-900 selection:bg-blue-100 relative">
-      <main className="max-w-7xl mx-auto px-6 pt-8 pb-24">
+      <main className="max-w-7xl mx-auto px-4 md:px-6 pt-6 md:pt-8 pb-32 md:pb-24">
+        {/* BREADCRUMBS - Hide on very small screens to save space */}
         <nav className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-slate-400">
-            <Link href="/" className="hover:text-blue-600 transition-colors">
-              Home
-            </Link>
-            <span>/</span>
+          <div className="flex items-center gap-2 text-[10px] md:text-[11px] font-bold uppercase tracking-widest text-slate-400">
             <Link
               href="/listings"
-              className="hover:text-blue-600 transition-colors"
+              className="hover:text-blue-600 transition-colors flex items-center gap-1"
             >
-              Listings
+              <ChevronLeft size={14} className="md:hidden" /> Listings
             </Link>
-            <span>/</span>
-            <span className="text-slate-900 truncate max-w-[150px]">
+            <span className="hidden md:inline">/</span>
+            <span className="text-slate-900 truncate max-w-[120px] md:max-w-[200px] hidden md:inline">
               {hostel.title}
             </span>
           </div>
-          <div className="flex gap-2">
-            <button className="p-2 hover:bg-slate-50 rounded-full transition-colors text-slate-400">
-              <Share2 size={16} />
+          <div className="flex gap-1 md:gap-2">
+            <button
+              onClick={handleShare}
+              className="p-2 hover:bg-slate-50 rounded-full text-slate-400 hover:text-blue-600 transition-all"
+            >
+              <Share2 size={18} />
             </button>
-            <button className="p-2 hover:bg-slate-50 rounded-full transition-colors text-slate-400">
-              <Heart size={16} />
+            <button className="p-2 hover:bg-slate-50 rounded-full text-slate-400 hover:text-red-500 transition-all">
+              <Heart size={18} />
             </button>
           </div>
         </nav>
 
-        <section className="grid grid-cols-1 md:grid-cols-4 grid-rows-2 gap-3 h-[300px] md:h-[400px] mb-12 overflow-hidden rounded-3xl">
+        {/* 2. RESPONSIVE BENTO GALLERY */}
+        <section className="grid grid-cols-1 md:grid-cols-4 grid-rows-1 md:grid-rows-2 gap-2 md:gap-3 h-[250px] md:h-[450px] mb-8 md:mb-12 overflow-hidden rounded-2xl md:rounded-3xl">
           <div
             onClick={() => openGallery(0)}
-            className="md:col-span-2 md:row-span-2 bg-slate-50 border border-slate-100 relative group cursor-pointer overflow-hidden"
+            className="md:col-span-2 md:row-span-2 bg-slate-50 relative group cursor-pointer overflow-hidden"
           >
             {hostel.images?.[0] ? (
               <img
                 src={hostel.images[0]}
-                alt="Main View"
+                alt="Main"
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
             ) : (
-              <div className="absolute inset-0 flex items-center justify-center text-slate-300 font-bold uppercase tracking-widest text-[10px]">
+              <div className="absolute inset-0 flex items-center justify-center text-slate-300 font-bold uppercase text-[10px]">
                 Main View
               </div>
             )}
+            {/* Show "View All" on mobile main image directly */}
+            <button className="md:hidden absolute bottom-4 right-4 px-4 py-2 bg-white/90 backdrop-blur text-slate-900 font-black text-[9px] uppercase tracking-widest rounded-lg shadow-lg">
+              {hostel.images?.length || 0} Photos
+            </button>
           </div>
 
           <div
             onClick={() => openGallery(1)}
-            className="hidden md:flex bg-slate-50 border border-slate-100 relative group cursor-pointer overflow-hidden"
+            className="hidden md:flex bg-slate-50 relative group cursor-pointer overflow-hidden"
           >
-            {hostel.images?.[1] ? (
+            {hostel.images?.[1] && (
               <img
                 src={hostel.images[1]}
-                alt="Interior"
                 className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                alt=""
               />
-            ) : (
-              <span className="text-slate-200 font-bold text-[10px] uppercase tracking-widest">
-                Lobby
-              </span>
             )}
           </div>
-
           <div
             onClick={() => openGallery(2)}
-            className="hidden md:flex bg-slate-50 border border-slate-100 relative group cursor-pointer overflow-hidden"
+            className="hidden md:flex bg-slate-50 relative group cursor-pointer overflow-hidden"
           >
-            {hostel.images?.[2] ? (
+            {hostel.images?.[2] && (
               <img
                 src={hostel.images[2]}
-                alt="Bedroom"
                 className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                alt=""
               />
-            ) : (
-              <span className="text-slate-200 font-bold text-[10px] uppercase tracking-widest">
-                Bedroom
-              </span>
             )}
           </div>
-
           <div
             onClick={() => openGallery(3)}
-            className="hidden md:flex md:col-span-2 bg-slate-50 border border-slate-100 items-center justify-center relative group cursor-pointer overflow-hidden"
+            className="hidden md:flex md:col-span-2 bg-slate-50 relative group cursor-pointer overflow-hidden"
           >
-            {hostel.images?.[3] ? (
+            {hostel.images?.[3] && (
               <img
                 src={hostel.images[3]}
-                alt="Amenities"
                 className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                alt=""
               />
-            ) : (
-              <div className="absolute inset-0 flex items-center justify-center text-slate-200 font-bold tracking-widest uppercase text-[10px]">
-                Terrace
-              </div>
             )}
-            <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors" />
-            <button className="absolute bottom-6 right-6 px-5 py-2.5 bg-white text-slate-900 font-black text-[10px] uppercase tracking-widest rounded-lg shadow-sm border border-slate-200 z-10 hover:bg-slate-50 transition-all">
-              {hostel.images?.length > 4
-                ? `+${hostel.images.length - 4} Photos`
-                : "View All"}
+            <button className="absolute bottom-6 right-6 px-5 py-2.5 bg-white text-slate-900 font-black text-[10px] uppercase tracking-widest rounded-lg shadow-sm z-10 hover:bg-slate-50 transition-all">
+              +{hostel.images?.length - 4 || 0} Photos
             </button>
           </div>
         </section>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-12 lg:gap-20">
-          <div className="space-y-12">
+        {/* 3. CONTENT GRID */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-10 lg:gap-20">
+          <div className="space-y-10 md:space-y-12">
             <div>
-              <div className="flex flex-wrap items-center gap-4 mb-4">
+              <div className="flex flex-wrap items-center gap-3 mb-4">
                 <Badge variant={hostel.gender} />
                 <StarRating
                   rating={hostel.rating}
                   reviewCount={hostel.reviewCount}
                 />
               </div>
-              <h1 className="text-3xl md:text-5xl font-black tracking-tight text-slate-900 leading-tight mb-6">
+              <h1 className="text-2xl md:text-5xl font-black tracking-tight text-slate-900 leading-tight mb-4 md:mb-6">
                 {hostel.title}
               </h1>
-              <div className="flex flex-wrap items-center gap-6 text-[13px] font-bold">
+              <div className="flex flex-wrap items-center gap-4 md:gap-6 text-[12px] md:text-[13px] font-bold">
                 <p className="flex items-center gap-2 text-slate-500">
                   <MapPin size={16} className="text-blue-600" /> {hostel.area},{" "}
                   {hostel.city}
                 </p>
                 <button
                   onClick={openMap}
-                  className="text-blue-600 hover:text-blue-700 flex items-center gap-1 group"
+                  className="text-blue-600 hover:text-blue-700 flex items-center gap-1 underline md:no-underline"
                 >
-                  View on Google Maps
-                  <ExternalLink
-                    size={12}
-                    className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
-                  />
+                  View on Map
                 </button>
               </div>
             </div>
 
-            <section>
-              <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-blue-600 mb-4">
+            <section className="border-t border-slate-100 pt-8">
+              <h2 className="text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] text-blue-600 mb-4">
                 Description
               </h2>
-              <p className="text-slate-600 leading-relaxed text-base">
+              <p className="text-slate-600 leading-relaxed text-sm md:text-base">
                 {hostel.description}
               </p>
             </section>
 
-            <section>
-              <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-blue-600 mb-8">
-                Facilities & Amenities
+            <section className="border-t border-slate-100 pt-8">
+              <h2 className="text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] text-blue-600 mb-6">
+                Facilities
               </h2>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 md:gap-6">
                 {AMENITY_LIST.map((item) => {
                   const isActive = hostel.amenities?.includes(item.name);
                   return (
                     <div
                       key={item.name}
-                      className={`flex items-center gap-3 ${isActive ? "opacity-100" : "opacity-30 grayscale"}`}
+                      className={`flex items-center gap-3 ${isActive ? "opacity-100" : "opacity-30"}`}
                     >
-                      <div className="p-2.5 bg-slate-50 rounded-xl border border-slate-100">
-                        <item.icon
-                          size={18}
-                          strokeWidth={2}
-                          className="text-slate-700"
-                        />
+                      <div className="p-2 md:p-2.5 bg-slate-50 rounded-xl border border-slate-100">
+                        <item.icon size={18} className="text-slate-700" />
                       </div>
-                      <span className="text-[12px] font-bold text-slate-700">
+                      <span className="text-[11px] md:text-[12px] font-bold text-slate-700">
                         {item.name}
                       </span>
                     </div>
@@ -250,51 +244,30 @@ export default function HostelDetailPage() {
             </section>
           </div>
 
-          <aside>
+          {/* DESKTOP SIDEBAR */}
+          <aside className="hidden lg:block">
             <div className="sticky top-10 space-y-4">
               <div className="p-8 bg-white border border-slate-200 rounded-3xl shadow-sm">
-                <div className="mb-6">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">
-                    Monthly Price
-                  </p>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-3xl font-black text-slate-900">
-                      PKR {hostel.price?.toLocaleString()}
-                    </span>
-                  </div>
-                </div>
-                <div className="space-y-3 mb-8 text-[13px]">
-                  <div className="flex justify-between py-2 border-b border-slate-50">
-                    <span className="text-slate-400 font-medium tracking-tight">
-                      Room Type
-                    </span>
-                    <span className="text-slate-900 font-bold">
-                      Standard Sharing
-                    </span>
-                  </div>
-                  <div className="flex justify-between py-2 border-b border-slate-50">
-                    <span className="text-slate-400 font-medium tracking-tight">
-                      Availability
-                    </span>
-                    <span className="text-green-600 font-bold">In Stock</span>
-                  </div>
-                </div>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">
+                  Monthly Price
+                </p>
+                <h3 className="text-3xl font-black text-slate-900 mb-8">
+                  PKR {hostel.price?.toLocaleString()}
+                </h3>
                 <button
                   onClick={handleWhatsApp}
-                  className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white py-4 rounded-xl font-black text-xs uppercase tracking-widest shadow-lg shadow-green-100 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                  className="w-full bg-[#25D366] text-white py-4 rounded-xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-[#20bd5a] transition-all"
                 >
-                  <MessageSquare size={16} fill="currentColor" />
-                  Contact Owner
+                  <MessageSquare size={16} fill="currentColor" /> Contact Owner
                 </button>
               </div>
               <div className="p-5 bg-slate-50 rounded-2xl flex items-start gap-4 border border-slate-100">
                 <ShieldCheck size={20} className="text-blue-600 shrink-0" />
-                <p className="text-[11px] text-slate-500 font-medium leading-relaxed uppercase">
+                <p className="text-[10px] text-slate-500 font-medium leading-relaxed uppercase">
                   Property verified by{" "}
-                  <span className="text-slate-900 font-bold underline decoration-blue-200">
+                  <span className="font-bold underline decoration-blue-200 text-slate-900">
                     HostelVaniya
                   </span>
-                  . 100% Secure Listing.
                 </p>
               </div>
             </div>
@@ -302,61 +275,71 @@ export default function HostelDetailPage() {
         </div>
       </main>
 
+      {/* MOBILE STICKY BOTTOM BAR */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 p-4 z-50 flex items-center justify-between shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+        <div>
+          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+            Monthly
+          </p>
+          <p className="text-lg font-black text-slate-900">
+            PKR {hostel.price?.toLocaleString()}
+          </p>
+        </div>
+        <button
+          onClick={handleWhatsApp}
+          className="bg-[#25D366] text-white px-6 py-3.5 rounded-xl font-black text-xs uppercase tracking-widest flex items-center gap-2"
+        >
+          <MessageSquare size={16} fill="currentColor" /> Contact
+        </button>
+      </div>
+
+      {/* 4. LIGHTBOX MODAL */}
       {isGalleryOpen && (
-        <div className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-md flex flex-col items-center justify-center p-4 md:p-10 animate-in fade-in duration-300">
+        <div className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-md flex flex-col items-center justify-center p-4 animate-in fade-in duration-300">
           <button
             onClick={() => setIsGalleryOpen(false)}
-            className="absolute top-6 right-6 text-white/70 hover:text-white bg-white/10 p-2 rounded-full transition-all"
+            className="absolute top-4 right-4 md:top-6 md:right-6 text-white/70 hover:text-white bg-white/10 p-2 rounded-full transition-all"
           >
             <X size={24} />
           </button>
-
           <div className="absolute top-6 left-6 text-white/40 text-[10px] font-black uppercase tracking-widest">
             {activeImageIndex + 1} / {hostel.images?.length || 0}
           </div>
-
-          <div className="relative w-full max-w-5xl h-[70vh] flex items-center justify-center">
+          <div className="relative w-full max-w-5xl h-[60vh] md:h-[75vh] flex items-center justify-center">
             <button
               onClick={() =>
                 setActiveImageIndex((prev) =>
                   prev > 0 ? prev - 1 : (hostel.images?.length || 1) - 1,
                 )
               }
-              className="absolute left-0 text-white/50 hover:text-white p-4 transition-all"
+              className="absolute left-0 text-white/50 hover:text-white p-2 md:p-4"
             >
-              <ChevronLeft size={48} strokeWidth={1} />
+              <ChevronLeft size={40} />
             </button>
-
             <img
               src={hostel.images?.[activeImageIndex]}
-              alt="Gallery Preview"
+              alt="Preview"
               className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
             />
-
             <button
               onClick={() =>
                 setActiveImageIndex((prev) =>
                   prev < (hostel.images?.length || 1) - 1 ? prev + 1 : 0,
                 )
               }
-              className="absolute right-0 text-white/50 hover:text-white p-4 transition-all"
+              className="absolute right-0 text-white/50 hover:text-white p-2 md:p-4"
             >
-              <ChevronRight size={48} strokeWidth={1} />
+              <ChevronRight size={40} />
             </button>
           </div>
-
-          <div className="mt-8 flex gap-2 overflow-x-auto p-2 max-w-full">
+          <div className="mt-8 flex gap-2 overflow-x-auto p-2 w-full max-w-4xl justify-start md:justify-center scrollbar-hide">
             {hostel.images?.map((img, idx) => (
               <div
                 key={idx}
                 onClick={() => setActiveImageIndex(idx)}
-                className={`h-16 w-24 shrink-0 rounded-md overflow-hidden cursor-pointer border-2 transition-all ${activeImageIndex === idx ? "border-blue-500 scale-105" : "border-transparent opacity-50"}`}
+                className={`h-12 w-16 md:h-16 md:w-24 shrink-0 rounded-md overflow-hidden cursor-pointer border-2 transition-all ${activeImageIndex === idx ? "border-blue-500 scale-105" : "border-transparent opacity-50"}`}
               >
-                <img
-                  src={img}
-                  className="w-full h-full object-cover"
-                  alt="thumbnail"
-                />
+                <img src={img} className="w-full h-full object-cover" alt="" />
               </div>
             ))}
           </div>
@@ -370,22 +353,24 @@ function LoadingSkeleton() {
   return (
     <div className="max-w-7xl mx-auto px-6 pt-12 animate-pulse">
       <div className="h-4 w-48 bg-slate-100 mb-8 rounded" />
-      <div className="h-[400px] bg-slate-100 rounded-3xl mb-12" />
+      <div className="h-[300px] md:h-[400px] bg-slate-100 rounded-3xl mb-12" />
+      <div className="h-10 w-2/3 bg-slate-100 rounded-lg mb-6" />
+      <div className="h-32 w-full bg-slate-100 rounded-xl" />
     </div>
   );
 }
 
 function NotFoundState() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center">
-      <h2 className="text-xl font-bold text-slate-900 uppercase tracking-widest">
+    <div className="min-h-screen flex flex-col items-center justify-center text-center px-6">
+      <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter mb-4">
         Hostel Not Found
       </h2>
       <Link
         href="/listings"
-        className="mt-4 text-blue-600 text-[10px] font-black uppercase tracking-widest hover:underline"
+        className="text-blue-600 font-black text-[10px] uppercase tracking-widest border-b-2 border-blue-600 pb-1"
       >
-        Back to listings
+        Return to listings
       </Link>
     </div>
   );
