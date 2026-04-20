@@ -36,7 +36,7 @@ export default function HostelGrid({ hostels }) {
   };
 
   return (
-    <div className="relative group w-full">
+    <div className="relative w-full">
       {/* Left Navigation - Always Visible if content exists */}
       {showLeft && (
         <button

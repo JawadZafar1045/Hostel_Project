@@ -4,7 +4,20 @@ import HostelScrollGrid from "@/components/hostel/HostelScrollGrid";
 import HostelSkeleton from "@/components/hostel/HostelSkeleton";
 import HostelGrid from "@/components/hostel/HostelGrid";
 import { SearchBar } from "@/components/hostel/SearchBar";
+import TrustStrip from "@/components/home/TrustStrip";
+import HowItWorks from "@/components/home/HowItWorks";
+import OwnerCTA from "@/components/home/OwnerCTA";
+import Image from "next/image";
 import { useEffect, useState } from "react";
+
+// Standard Section Wrapper to keep everything aligned
+const SectionWrapper = ({ children, className = "", isFullWidth = false }) => (
+  <section className={`py-16 md:py-24 ${className}`}>
+    <div className={isFullWidth ? "w-full" : "max-w-7xl mx-auto px-6"}>
+      {children}
+    </div>
+  </section>
+);
 
 export default function HomePage() {
   const TEST_HOSTELS = [
@@ -75,88 +88,99 @@ export default function HomePage() {
       isNew: true,
     },
   ];
+
   const [hostels, setHostels] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // SIMULATING BACKEND FETCH (2 seconds delay)
     const timer = setTimeout(() => {
-      setHostels(TEST_HOSTELS); // Using your TEST_HOSTELS array
+      setHostels(TEST_HOSTELS);
       setIsLoading(false);
     }, 2000);
-
     return () => clearTimeout(timer);
   }, []);
-  const handleSearch = (query) => {
-    console.log("Searching for:", query);
-    // This is where you will eventually filter your hostels or call Jawad's API
-  };
+
+  const handleSearch = (query) => console.log("Searching for:", query);
+
   return (
     <main className="min-h-screen bg-white">
-      {/* Hero Section */}
-      <section className="bg-slate-50 py-20">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-6xl font-black text-slate-950 mb-6 tracking-tighter">
-              Find Your Perfect Hostel
-            </h1>
-            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-              Verified student accommodation in Bahawalpur and beyond. Starting
-              from simple rooms to premium executive stays.
-            </p>
-          </div>
+      {/* SECTION 1: HERO */}
+      <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
+        <Image
+          src="/images/hero/hero-bg.webp"
+          alt="Hostel Hub Background"
+          fill
+          priority
+          className="object-cover z-0"
+          quality={100}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-black/70 z-10" />
 
-          <div className="mt-8 flex justify-center">
-            <SearchBar onSearch={handleSearch} />
-          </div>
-        </div>
-      </section>
-
-      <section className="py-10">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="mb-10">
-            <h2 className="text-3xl font-black text-slate-900 tracking-tight">
-              Popular in Bahawalpur
-            </h2>
-            <p className="text-slate-500 mt-1">
-              Top-rated student housing near IUB.
-            </p>
-          </div>
-
-          {/* SMART GRID LOGIC */}
-          <div className="relative group w-full">
-            {/* If loading, show 4 skeletons. If ready, show the grid. */}
-            {isLoading ? (
-              <div className="flex gap-6 overflow-hidden py-8 px-2">
-                {[...Array(4)].map((_, i) => (
-                  <HostelSkeleton key={i} />
-                ))}
-              </div>
-            ) : (
-              <HostelScrollGrid hostels={hostels} />
-            )}
-          </div>
-          {/* SECTION 2: All Listings (The Grid the Tech Lead wants) */}
-          <section className="py-10">
-            <h2 className="text-2xl font-bold mb-6">Explore All Hostels</h2>
-            <HostelGrid hostels={TEST_HOSTELS} isLoading={isLoading} />
-          </section>
-        </div>
-      </section>
-
-      <section className="py-12 bg-slate-900 text-white">
-        <div className="container mx-auto px-4 text-center">
-          <h3 className="text-xl font-bold mb-2">
-            Are you a Hostel Owner in BWP?
-          </h3>
-          <p className="text-slate-400 mb-6">
-            List your property today and reach thousands of students.
+        <div className="container relative z-20 mx-auto px-6 text-center">
+          <span className="inline-block text-amber-300 text-sm font-bold tracking-[0.2em] uppercase mb-4">
+            Pakistan&apos;s #1 Student Housing Platform
+          </span>
+          <h1 className="text-4xl md:text-7xl font-black text-white mb-6 tracking-tight leading-tight">
+            Find Your Perfect Hostel
+          </h1>
+          <p className="text-lg md:text-xl text-slate-200 max-w-2xl mx-auto mb-10 font-medium">
+            Verified student accommodation in Bahawalpur. Starting from simple
+            rooms to premium executive stays.
           </p>
-          <button className="bg-white text-slate-900 px-6 py-2 rounded-full font-bold text-sm">
-            List Property
-          </button>
+          <div className="flex flex-col items-center gap-8">
+            <div className="w-full max-w-3xl">
+              <SearchBar onSearch={handleSearch} />
+            </div>
+            <TrustStrip />
+          </div>
         </div>
       </section>
+
+      {/* SECTION 2: POPULAR (Horizontal Scroll) */}
+      <SectionWrapper>
+        <div className="mb-10">
+          <h2 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">
+            Popular in Bahawalpur
+          </h2>
+          <p className="text-base md:text-lg text-slate-500 mt-2">
+            Top-rated student housing near IUB.
+          </p>
+        </div>
+        <div className="relative">
+          {isLoading ? (
+            <div className="flex gap-6 overflow-hidden">
+              {[...Array(4)].map((_, i) => (
+                <HostelSkeleton key={i} />
+              ))}
+            </div>
+          ) : (
+            <HostelScrollGrid hostels={hostels} />
+          )}
+        </div>
+      </SectionWrapper>
+
+      {/* SECTION 3: HOW IT WORKS (Unified Spacing) */}
+      <div className="bg-slate-50/50 border-y border-slate-100">
+        <SectionWrapper>
+          <HowItWorks />
+        </SectionWrapper>
+      </div>
+
+      {/* SECTION 4: ALL LISTINGS (Grid) */}
+      <SectionWrapper>
+        <div className="mb-10">
+          <h2 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">
+            Explore All Hostels
+          </h2>
+          <p className="text-base md:text-lg text-slate-500 mt-2">
+            Discover more options across the city.
+          </p>
+        </div>
+        <HostelGrid hostels={TEST_HOSTELS} isLoading={isLoading} />
+      </SectionWrapper>
+
+      {/* SECTION 5: OWNER CTA */}
+      <OwnerCTA />
     </main>
   );
 }

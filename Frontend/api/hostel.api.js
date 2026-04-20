@@ -1,10 +1,17 @@
+<<<<<<< HEAD
 //mock data and API functions for hostels. In production, these would call real endpoints.
+=======
+/**
+ * T5-D: Mock API with Live Filtering Logic
+ */
+>>>>>>> devolper
 const ALL_HOSTELS = Array.from({ length: 40 }, (_, i) => ({
   _id: `h-${i + 1}`,
   title: `${i % 2 === 0 ? "Al-Rehman" : "Executive"} Stay ${i + 1}`,
   city: i % 3 === 0 ? "Islamabad" : i % 3 === 1 ? "Lahore" : "Bahawalpur",
   type: i % 2 === 0 ? "boys" : "girls",
   price: 12000 + i * 1000,
+<<<<<<< HEAD
   description:
     "Experience premium student living with all-inclusive utilities, 3x daily meals, and high-speed fiber internet. Located in a secure gated community with 24/7 CCTV surveillance.",
   amenities: ["WiFi", "AC", "Laundry", "Mess", "Generator"],
@@ -25,6 +32,22 @@ export const fetchHostels = async (url) => {
 
   // Mock Logic
   const urlObj = new URL(url, "http://localhost");
+=======
+  images: [],
+}));
+
+export const fetchHostels = async (url) => {
+  // 1. Try real fetch first
+  try {
+    const res = await fetch(url);
+    if (res.ok) return await res.json();
+  } catch (e) {
+    /* Fallback to mock */
+  }
+
+  // 2. Mock Filtering Logic (Matches the URL params)
+  const urlObj = new URL(url, window.location.origin);
+>>>>>>> devolper
   const city = urlObj.searchParams.get("city")?.toLowerCase();
   const type = urlObj.searchParams.get("type");
   const maxPrice = urlObj.searchParams.get("maxPrice");
@@ -41,6 +64,7 @@ export const fetchHostels = async (url) => {
   const totalPages = Math.ceil(filtered.length / limit);
   const data = filtered.slice((page - 1) * limit, page * limit);
 
+<<<<<<< HEAD
   await new Promise((r) => setTimeout(r, 600));
   return { data, totalResults: filtered.length, totalPages };
 };
@@ -62,3 +86,10 @@ export const fetchHostelById = async (url) => {
   await new Promise((r) => setTimeout(r, 800));
   return found;
 };
+=======
+  // Simulate network delay
+  await new Promise((r) => setTimeout(r, 600));
+
+  return { data, totalResults: filtered.length, totalPages };
+};
+>>>>>>> devolper

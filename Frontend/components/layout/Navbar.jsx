@@ -10,11 +10,12 @@ export default function Navbar() {
   const pathname = usePathname();
 
   const navLinks = [
-    { href: "/home", label: "Home" },
-    { href: "/explore", label: "Explore" },
-    { href: "/about", label: "About" },
-    { href: "/contact", label: "Contact" },
-    { href: "/services", label: "Services" },
+<<<<<< frontend/feature/hostel-listing
+    { href: "/listings", label: "Browse Hostels" },
+    { href: "/how-it-works", label: "How it Works" },
+    { href: "/list-property", label: "List Property" },
+
+
   ];
 
   const closeMenu = () => setMobileOpen(false);
