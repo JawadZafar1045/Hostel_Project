@@ -35,7 +35,6 @@ export function SearchBar({
           "w-full pl-12 pr-12 py-4 text-slate-900 rounded-2xl border border-slate-200 bg-white shadow-sm",
           "placeholder:text-slate-400 transition-all duration-200",
 
-          // THE OVERRIDES: The '!' makes sure these beat your globals.css
           "focus:!outline-none focus:!ring-0 focus:border-slate-400",
 
           "hover:border-slate-300",
