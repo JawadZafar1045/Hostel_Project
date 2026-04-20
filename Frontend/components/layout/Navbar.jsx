@@ -10,12 +10,17 @@ export default function Navbar() {
   const pathname = usePathname();
 
   const navLinks = [
+<<<<<< frontend/feature/hostel-listing
     { href: "/listings", label: "Browse Hostels" },
     { href: "/how-it-works", label: "How it Works" },
     { href: "/list-property", label: "List Property" },
+
+
   ];
 
   const closeMenu = () => setMobileOpen(false);
+
+  if (pathname.startsWith("/admin-")) return null;
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-100 shadow-sm">
@@ -34,11 +39,10 @@ export default function Navbar() {
             <Link
               key={href}
               href={href}
-              className={`text-sm transition-colors ${
-                pathname === href
-                  ? "text-blue-600 font-medium"
-                  : "text-gray-600 hover:text-blue-600"
-              }`}
+              className={`text-sm transition-colors ${pathname === href
+                ? "text-blue-600 font-medium"
+                : "text-gray-600 hover:text-blue-600"
+                }`}
             >
               {label}
             </Link>

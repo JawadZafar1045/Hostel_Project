@@ -7,6 +7,7 @@ export default function Input({
   onChange,
   error,
   leftIcon,
+  rightIcon,
   className = "",
   ...props
 }) {
@@ -33,6 +34,7 @@ export default function Input({
           className={`
             w-full py-2.5 px-4 text-sm rounded-lg border bg-white transition-all outline-none focus:ring-4
             ${leftIcon ? "pl-10" : ""}
+            ${rightIcon ? "pr-10" : ""}
             ${
               error
                 ? "border-red-500 focus:ring-red-100"
@@ -41,6 +43,12 @@ export default function Input({
           `}
           {...props}
         />
+
+        {rightIcon && (
+          <span className="absolute right-3.5 text-gray-400 flex items-center justify-center">
+            {rightIcon}
+          </span>
+        )}
       </div>
 
       {error && <p className="text-xs text-red-600 font-medium">{error}</p>}
