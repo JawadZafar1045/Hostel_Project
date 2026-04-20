@@ -104,7 +104,6 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen bg-white">
-      {/* SECTION 1: HERO */}
       <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
         <Image
           src="/images/hero/hero-bg.webp"

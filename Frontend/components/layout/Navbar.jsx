@@ -4,18 +4,16 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Button from "@/components/ui/Button";
+import Image from "next/image";
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
 
   const navLinks = [
-<<<<<< frontend/feature/hostel-listing
     { href: "/listings", label: "Browse Hostels" },
     { href: "/how-it-works", label: "How it Works" },
     { href: "/list-property", label: "List Property" },
-
-
   ];
 
   const closeMenu = () => setMobileOpen(false);
@@ -25,12 +23,18 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-100 shadow-sm">
       <div className="container mx-auto px-6 h-16 md:h-20 flex items-center justify-between">
-        {/* Logo */}
         <Link
           href="/"
           className="text-2xl font-bold tracking-tight text-blue-600 shrink-0"
         >
-          Hostelvanya
+          {/* <Image
+            src="/images/logo/logo-hostelvaniya.webp"
+            alt="HostelVaniya"
+            width={100}
+            height={100} // Set desired height
+            className="object-contain transition-transform group-hover:scale-105"
+          /> */}
+          Hostelvaniya
         </Link>
 
         {/* Desktop Navigation */}
@@ -39,10 +43,11 @@ export default function Navbar() {
             <Link
               key={href}
               href={href}
-              className={`text-sm transition-colors ${pathname === href
-                ? "text-blue-600 font-medium"
-                : "text-gray-600 hover:text-blue-600"
-                }`}
+              className={`text-sm transition-colors ${
+                pathname === href
+                  ? "text-blue-600 font-medium"
+                  : "text-gray-600 hover:text-blue-600"
+              }`}
             >
               {label}
             </Link>

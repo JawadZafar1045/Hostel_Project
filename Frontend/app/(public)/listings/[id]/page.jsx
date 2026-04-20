@@ -119,28 +119,23 @@ export default function HostelDetailPage() {
         </nav>
 
         {/* 2. RESPONSIVE BENTO GALLERY */}
-        <section className="grid grid-cols-1 md:grid-cols-4 grid-rows-1 md:grid-rows-2 gap-2 md:gap-3 h-[250px] md:h-[450px] mb-8 md:mb-12 overflow-hidden rounded-2xl md:rounded-3xl">
+        {/* 2. RESPONSIVE BENTO GALLERY */}
+        <section className="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-2 md:gap-3 h-[250px] md:h-[450px] mb-8 md:mb-12 overflow-hidden rounded-2xl md:rounded-3xl">
+          {/* Main Image: Takes 2 cols and both rows on the left */}
           <div
             onClick={() => openGallery(0)}
             className="md:col-span-2 md:row-span-2 bg-slate-50 relative group cursor-pointer overflow-hidden"
           >
-            {hostel.images?.[0] ? (
+            {hostel.images?.[0] && (
               <img
                 src={hostel.images[0]}
-                alt="Main"
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                alt="Main"
               />
-            ) : (
-              <div className="absolute inset-0 flex items-center justify-center text-slate-300 font-bold uppercase text-[10px]">
-                Main View
-              </div>
             )}
-            {/* Show "View All" on mobile main image directly */}
-            <button className="md:hidden absolute bottom-4 right-4 px-4 py-2 bg-white/90 backdrop-blur text-slate-900 font-black text-[9px] uppercase tracking-widest rounded-lg shadow-lg">
-              {hostel.images?.length || 0} Photos
-            </button>
           </div>
 
+          {/* Image 2: Top Right (1st slot) */}
           <div
             onClick={() => openGallery(1)}
             className="hidden md:flex bg-slate-50 relative group cursor-pointer overflow-hidden"
@@ -148,11 +143,13 @@ export default function HostelDetailPage() {
             {hostel.images?.[1] && (
               <img
                 src={hostel.images[1]}
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-all"
                 alt=""
               />
             )}
           </div>
+
+          {/* Image 3: Top Right (2nd slot) */}
           <div
             onClick={() => openGallery(2)}
             className="hidden md:flex bg-slate-50 relative group cursor-pointer overflow-hidden"
@@ -160,11 +157,14 @@ export default function HostelDetailPage() {
             {hostel.images?.[2] && (
               <img
                 src={hostel.images[2]}
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-all"
                 alt=""
               />
             )}
           </div>
+
+          {/* Image 4: Bottom Right (Wide slot) */}
+          {/* Changed col-span to 2 so it fills the remaining space under images 2 and 3 */}
           <div
             onClick={() => openGallery(3)}
             className="hidden md:flex md:col-span-2 bg-slate-50 relative group cursor-pointer overflow-hidden"
@@ -172,13 +172,16 @@ export default function HostelDetailPage() {
             {hostel.images?.[3] && (
               <img
                 src={hostel.images[3]}
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-all"
                 alt=""
               />
             )}
-            <button className="absolute bottom-6 right-6 px-5 py-2.5 bg-white text-slate-900 font-black text-[10px] uppercase tracking-widest rounded-lg shadow-sm z-10 hover:bg-slate-50 transition-all">
-              +{hostel.images?.length - 4 || 0} Photos
-            </button>
+
+            {hostel.images?.length > 4 && (
+              <button className="absolute bottom-6 right-6 px-5 py-2.5 bg-white text-slate-900 font-black text-[10px] uppercase tracking-widest rounded-lg shadow-sm z-10 hover:bg-slate-50">
+                +{hostel.images.length - 4} Photos
+              </button>
+            )}
           </div>
         </section>
 

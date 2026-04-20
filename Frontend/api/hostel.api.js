@@ -12,6 +12,8 @@ const ALL_HOSTELS = Array.from({ length: 40 }, (_, i) => ({
     "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?q=80&w=2069",
     "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?q=80&w=2070",
     "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=2071",
+    "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=2071",
+    "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=2071",
   ],
 }));
 
