@@ -1,4 +1,7 @@
 "use client";
+
+import useSWR from "swr";
+import { fetchHostels } from "@/api/hostel.api";
 import HostelCard from "@/components/hostel/HostelCard";
 import HostelScrollGrid from "@/components/hostel/HostelScrollGrid";
 import HostelSkeleton from "@/components/hostel/HostelSkeleton";
@@ -8,9 +11,8 @@ import TrustStrip from "@/components/home/TrustStrip";
 import HowItWorks from "@/components/home/HowItWorks";
 import OwnerCTA from "@/components/home/OwnerCTA";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
-// Standard Section Wrapper to keep everything aligned
 const SectionWrapper = ({ children, className = "", isFullWidth = false }) => (
   <section className={`py-16 md:py-24 ${className}`}>
     <div className={isFullWidth ? "w-full" : "max-w-7xl mx-auto px-6"}>
@@ -20,87 +22,20 @@ const SectionWrapper = ({ children, className = "", isFullWidth = false }) => (
 );
 
 export default function HomePage() {
-  const TEST_HOSTELS = [
-    {
-      _id: "1",
-      title: "Smart Stay Boys Hostel",
-      area: "Sector I-8",
-      city: "Islamabad",
-      price: 18000,
-      rating: 4.5,
-      reviewCount: 24,
-      gender: "boys",
-      isNew: true,
-    },
-    {
-      _id: "2",
-      title: "Executive Girls Residency",
-      area: "Gulberg III",
-      city: "Lahore",
-      price: 25000,
-      rating: 4.9,
-      reviewCount: 42,
-      gender: "girls",
-      isNew: false,
-    },
-    {
-      _id: "3",
-      title: "Peshawar Student Hub",
-      area: "University Road",
-      city: "Peshawar",
-      price: 15000,
-      rating: 4.2,
-      reviewCount: 18,
-      gender: "boys",
-      isNew: true,
-    },
-    {
-      _id: "4",
-      title: "BWP Luxury Stay",
-      area: "Model Town",
-      city: "Bahawalpur",
-      price: 15000,
-      rating: 4.2,
-      reviewCount: 18,
-      gender: "boys",
-      isNew: true,
-    },
-    {
-      _id: "5",
-      title: "IUB Executive Hostel",
-      area: "Baghdad Campus",
-      city: "Bahawalpur",
-      price: 15000,
-      rating: 4.2,
-      reviewCount: 18,
-      gender: "boys",
-      isNew: true,
-    },
-    {
-      _id: "6",
-      title: "QAMC Girls Wing",
-      area: "Medical Colony",
-      city: "Bahawalpur",
-      price: 15000,
-      rating: 4.2,
-      reviewCount: 18,
-      gender: "girls",
-      isNew: true,
-    },
-  ];
+  const router = useRouter();
 
-  const [hostels, setHostels] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { data, isLoading } = useSWR(
+    "/api/public/hostels?page=1&limit=8",
+    fetchHostels,
+  );
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setHostels(TEST_HOSTELS);
-      setIsLoading(false);
-    }, 2000);
-    return () => clearTimeout(timer);
-  }, []);
+  const hostels = data?.data || [];
 
-  const handleSearch = (query) => console.log("Searching for:", query);
+  const handleSearch = (query) => {
+    if (!query || query.trim() === "") return;
+
+    router.push(`/listings?city=${encodeURIComponent(query.trim())}`);
+  };
 
   return (
     <main className="min-h-screen bg-white">
@@ -123,8 +58,8 @@ export default function HomePage() {
             Find Your Perfect Hostel
           </h1>
           <p className="text-lg md:text-xl text-slate-200 max-w-2xl mx-auto mb-10 font-medium">
-            Verified student accommodation in Bahawalpur. Starting from simple
-            rooms to premium executive stays.
+            Verified student accommodation. Starting from simple rooms to
+            premium executive stays.
           </p>
           <div className="flex flex-col items-center gap-8">
             <div className="w-full max-w-3xl">
@@ -135,50 +70,45 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* SECTION 2: POPULAR (Horizontal Scroll) */}
       <SectionWrapper>
         <div className="mb-10">
           <h2 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">
-            Popular in Bahawalpur
+            Popular Stays
           </h2>
           <p className="text-base md:text-lg text-slate-500 mt-2">
-            Top-rated student housing near IUB.
+            Top-rated student housing verified by our team.
           </p>
         </div>
-        <div className="relative">
-          {isLoading ? (
-            <div className="flex gap-6 overflow-hidden">
-              {[...Array(4)].map((_, i) => (
-                <HostelSkeleton key={i} />
-              ))}
-            </div>
-          ) : (
-            <HostelScrollGrid hostels={hostels} />
-          )}
-        </div>
+
+        {isLoading ? (
+          <div className="flex gap-6 overflow-hidden">
+            {[...Array(4)].map((_, i) => (
+              <HostelSkeleton key={i} />
+            ))}
+          </div>
+        ) : (
+          <HostelScrollGrid hostels={hostels.slice(0, 4)} />
+        )}
       </SectionWrapper>
 
-      {/* SECTION 3: HOW IT WORKS (Unified Spacing) */}
       <div className="bg-slate-50/50 border-y border-slate-100">
         <SectionWrapper>
           <HowItWorks />
         </SectionWrapper>
       </div>
 
-      {/* SECTION 4: ALL LISTINGS (Grid) */}
       <SectionWrapper>
         <div className="mb-10">
           <h2 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">
             Explore All Hostels
           </h2>
           <p className="text-base md:text-lg text-slate-500 mt-2">
-            Discover more options across the city.
+            Discover more options across Pakistan.
           </p>
         </div>
-        <HostelGrid hostels={TEST_HOSTELS} isLoading={isLoading} />
+        <HostelGrid hostels={hostels} isLoading={isLoading} />
       </SectionWrapper>
 
-      {/* SECTION 5: OWNER CTA */}
       <OwnerCTA />
     </main>
   );
