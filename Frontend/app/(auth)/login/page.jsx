@@ -56,8 +56,8 @@ export default function LoginPage() {
 
       {/* Page heading */}
       <div className="w-full max-w-sm mb-6">
-        <h1 className="text-xl font-bold text-gray-900">Login</h1>
-        <div className="mt-4 border-b border-gray-200" />
+        <h1 className="text-xl font-bold text-gray-900"></h1>
+       
       </div>
 
       {/* Brand */}

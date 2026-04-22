@@ -2,15 +2,27 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Button from "@/components/ui/Button";
+import { useAuthStore } from "@/store/authStore";
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
+  const { user, isAuthenticated } = useAuthStore();
+
+  const handlePostHostelClick = () => {
+    setMobileOpen(false);
+    if (isAuthenticated && user?.role === 'owner') {
+      router.push('/list-property');
+    } else {
+      router.push('/login');
+    }
+  };
 
   const navLinks = [
-<<<<<< frontend/feature/hostel-listing
+
     { href: "/listings", label: "Browse Hostels" },
     { href: "/how-it-works", label: "How it Works" },
     { href: "/list-property", label: "List Property" },
@@ -51,17 +63,11 @@ export default function Navbar() {
 
         {/* Desktop Actions - Unified Component Usage */}
         <div className="hidden md:flex items-center gap-2">
-          <Link href="/login">
-            <Button variant="ghost" size="md" className="text-gray-700">
-              Login
-            </Button>
-          </Link>
 
-          <Link href="/register">
-            <Button size="md" className="rounded-full px-8">
-              Register Free
-            </Button>
-          </Link>
+
+          <Button size="md" className="rounded-full px-8" onClick={handlePostHostelClick}>
+            Post Your Hostel
+          </Button>
         </div>
 
         {/* Mobile Toggle */}
@@ -112,16 +118,9 @@ export default function Navbar() {
           </nav>
 
           <div className="flex flex-col gap-3 pt-4 border-t border-gray-100">
-            <Link href="/login" onClick={closeMenu}>
-              <Button variant="ghost" fullWidth size="md">
-                Login
-              </Button>
-            </Link>
-            <Link href="/register" onClick={closeMenu}>
-              <Button fullWidth size="md">
-                Register Free
-              </Button>
-            </Link>
+            <Button fullWidth size="md" onClick={handlePostHostelClick}>
+              Post Your Hostel
+            </Button>
           </div>
         </div>
       )}
