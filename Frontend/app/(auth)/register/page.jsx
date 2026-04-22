@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Eye, EyeOff, Loader2, GraduationCap, Home, CheckCircle2 } from 'lucide-react'
+import { Eye, EyeOff, Loader2, Home, CheckCircle2 } from 'lucide-react'
 import { registerStudent, registerOwner } from '@/api/auth.api'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
@@ -18,15 +18,17 @@ const registerSchema = z.object({
     .string()
     .min(1, 'Full name is required')
     .min(2, 'Must be at least 2 characters'),
-  email: z
+  emailOrPhone: z
     .string()
-    .min(1, 'Email is required')
-    .email('Must be a valid email address'),
-  phone: z
-    .string()
-    .min(1, 'Phone number is required')
-    .regex(/^\d+$/, 'Numbers only')
-    .min(10, 'Must be at least 10 digits'),
+    .min(1, 'Email or phone number is required')
+    .refine(
+      (value) => {
+        const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+        const isPhone = /^\d{10,}$/.test(value);
+        return isEmail || isPhone;
+      },
+      { message: 'Must be a valid email or at least 10-digit phone number' }
+    ),
   password: z
     .string()
     .min(1, 'Password is required')
@@ -50,29 +52,31 @@ export default function RegisterPage() {
   const {
     register,
     handleSubmit,
-    setValue,
-    watch,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(registerSchema),
     mode: 'onBlur',
     reValidateMode: 'onBlur',
-    defaultValues: { role: 'student' },
+    defaultValues: { role: 'owner' },
   })
-
-  const selectedRole = watch('role')
-
-  const handleRoleSelect = (role) => {
-    setValue('role', role, { shouldValidate: true })
-  }
 
   const onSubmit = async (data) => {
     setServerError('')
     try {
+      const isEmail = data.emailOrPhone.includes('@');
+      const payload = {
+        role: data.role,
+        fullName: data.fullName,
+        email: isEmail ? data.emailOrPhone : undefined,
+        phone: !isEmail ? data.emailOrPhone : undefined,
+        password: data.password,
+        confirmPassword: data.confirmPassword,
+      };
+
       if (data.role === 'owner') {
-        await registerOwner(data)
+        await registerOwner(payload)
       } else {
-        await registerStudent(data)
+        await registerStudent(payload)
       }
       setSuccess(true)
       setTimeout(() => router.push('/login'), 1500)
@@ -86,14 +90,15 @@ export default function RegisterPage() {
 
       {/* Page heading */}
       <div className="w-full max-w-sm mb-6">
-        <h1 className="text-xl font-bold text-gray-900">Register</h1>
-        <div className="mt-4 border-b border-gray-200" />
+        <h1 className="text-xl font-bold text-gray-900"></h1>
+       
       </div>
 
       {/* Brand */}
       <div className="text-center mb-6">
         <p className="text-2xl font-bold text-[#7C3AED]">Hostelvanya</p>
-        <h2 className="text-xl font-bold text-gray-900 mt-2">Create your account</h2>
+        <h2 className="text-xl font-bold text-gray-900 mt-2">List your property with us</h2>
+        <p className="text-sm text-gray-500 mt-1">Join thousands of hostel owners in Pakistan</p>
       </div>
 
       {/* Card */}
@@ -117,55 +122,18 @@ export default function RegisterPage() {
 
             <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-5">
 
-              {/* Role selector */}
+              {/* Registration Header */}
               <div className="flex flex-col gap-2">
-                <p className="text-sm font-medium text-gray-700">I am a...</p>
-                <div className="grid grid-cols-2 gap-3">
-
-                  {/* Student card */}
-                  <button
-                    type="button"
-                    onClick={() => handleRoleSelect('student')}
-                    className={`flex flex-col items-center justify-center gap-1.5 rounded-xl border-2 py-4 px-3 transition-all
-                      ${selectedRole === 'student'
-                        ? 'border-[#7C3AED] bg-purple-50'
-                        : 'border-gray-200 bg-white hover:border-gray-300'
-                      }`}
-                  >
-                    <GraduationCap
-                      size={28}
-                      className={selectedRole === 'student' ? 'text-[#7C3AED]' : 'text-gray-400'}
-                    />
-                    <span className={`text-sm font-semibold ${selectedRole === 'student' ? 'text-[#7C3AED]' : 'text-gray-700'}`}>
-                      Student
-                    </span>
-                    <span className="text-xs text-gray-400">Looking for a hostel</span>
-                  </button>
-
-                  {/* Owner card */}
-                  <button
-                    type="button"
-                    onClick={() => handleRoleSelect('owner')}
-                    className={`flex flex-col items-center justify-center gap-1.5 rounded-xl border-2 py-4 px-3 transition-all
-                      ${selectedRole === 'owner'
-                        ? 'border-[#7C3AED] bg-purple-50'
-                        : 'border-gray-200 bg-white hover:border-gray-300'
-                      }`}
-                  >
-                    <Home
-                      size={28}
-                      className={selectedRole === 'owner' ? 'text-[#7C3AED]' : 'text-gray-400'}
-                    />
-                    <span className={`text-sm font-semibold ${selectedRole === 'owner' ? 'text-[#7C3AED]' : 'text-gray-700'}`}>
-                      Owner
-                    </span>
-                    <span className="text-xs text-gray-400">Listing a property</span>
-                  </button>
-
+                <div className="flex flex-col items-center justify-center gap-1.5 rounded-xl border-2 border-[#7C3AED] bg-purple-50 py-5 px-3 transition-all">
+                  <Home
+                    size={32}
+                    className="text-[#7C3AED]"
+                  />
+                  <span className="text-base font-bold text-[#7C3AED]">
+                    Hostel Owner Account
+                  </span>
+                  <span className="text-xs text-gray-500 font-medium text-center">Get verified and start receiving bookings today</span>
                 </div>
-                {errors.role && (
-                  <p className="text-xs text-red-500">{errors.role.message}</p>
-                )}
               </div>
 
               {/* Full Name */}
@@ -186,39 +154,21 @@ export default function RegisterPage() {
                 )}
               </div>
 
-              {/* Email */}
+              {/* Email or Phone */}
               <div className="flex flex-col gap-1.5">
-                <label htmlFor="email" className="text-xs font-semibold tracking-wide text-gray-600 uppercase">
-                  Email Address
+                <label htmlFor="emailOrPhone" className="text-xs font-semibold tracking-wide text-gray-600 uppercase">
+                  Email or Phone Number
                 </label>
                 <Input
-                  id="email"
-                  type="email"
-                  placeholder="john@example.com"
-                  autoComplete="email"
-                  error={!!errors.email}
-                  {...register('email')}
+                  id="emailOrPhone"
+                  type="text"
+                  placeholder="john@example.com or 03001234567"
+                  autoComplete="username"
+                  error={!!errors.emailOrPhone}
+                  {...register('emailOrPhone')}
                 />
-                {errors.email && (
-                  <p className="text-xs text-red-500">{errors.email.message}</p>
-                )}
-              </div>
-
-              {/* Phone */}
-              <div className="flex flex-col gap-1.5">
-                <label htmlFor="phone" className="text-xs font-semibold tracking-wide text-gray-600 uppercase">
-                  Phone Number
-                </label>
-                <Input
-                  id="phone"
-                  type="tel"
-                  placeholder="03001234567"
-                  autoComplete="tel"
-                  error={!!errors.phone}
-                  {...register('phone')}
-                />
-                {errors.phone && (
-                  <p className="text-xs text-red-500">{errors.phone.message}</p>
+                {errors.emailOrPhone && (
+                  <p className="text-xs text-red-500">{errors.emailOrPhone.message}</p>
                 )}
               </div>
 
