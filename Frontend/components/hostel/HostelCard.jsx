@@ -20,7 +20,7 @@ export default function HostelCard({ hostel }) {
   };
 
   return (
-    <Link href={`/hostels/${hostel._id}`} className="group block outline-none">
+    <Link href={`/listings/${hostel._id}`} className="group block outline-none">
       <article className="relative bg-white rounded-xl border border-slate-200 overflow-hidden transition-shadow duration-300 hover:shadow-md isolate">
         <div className="relative aspect-[16/9] w-full bg-slate-100 overflow-hidden">
           {/* Replace the broken <Image> block with this logic */}
