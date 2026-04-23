@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -19,6 +19,14 @@ export default function AdminLoginPage() {
     const router = useRouter()
     const [showPassword, setShowPassword] = useState(false)
     const [error, setError] = useState('')
+
+    const { user, isAuthenticated } = useAuthStore()
+
+    useEffect(() => {
+        if (isAuthenticated && user?.role === 'admin') {
+            router.replace('/admin-portal/dashboard')
+        }
+    }, [isAuthenticated, user, router])
 
     const {
         register,
@@ -44,7 +52,7 @@ export default function AdminLoginPage() {
                 };
                 setToken('mock_admin_token_12345');
                 setUser(mockUser);
-                router.push('/admin-dashboard');
+                router.push('/admin-portal/dashboard');
                 return;
             }
 
@@ -59,7 +67,7 @@ export default function AdminLoginPage() {
             setToken(token || res.data.token);
             setUser(user);
 
-            router.push('/admin-dashboard')
+            router.push('/admin-portal/dashboard')
         } catch (err) {
             if (err?.response?.status === 401) {
                 setError('Invalid email or password.')
